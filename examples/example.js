@@ -1,43 +1,9 @@
-var apriori = require("../dist/apriori");
+import { Apriori } from "../dist/apriori";
 
-// var transactions = [
-//     [1, 3, 4],
-//     [2, 3, 5],
-//     [1, 2, 3, 5],
-//     [2, 5],
-//     [1, 2, 3, 5]
-// ];
-
-
-var transactions = [
-    [1, 2, 4, 5],
-    [1, 3, 4],
-    [2, 3, 5],
-    [2, 3],
-    [2, 4],
-    [1, 3, 5],
-    [1, 2, 3, 5],
-    [2, 5],
-    [1, 2, 3, 5]
-];
-
-// Execute Apriori with a minimum support of 40%.
-var apriori = new apriori.Apriori(.1);
+const apriori = new Apriori(0.1);
 console.log(`Executing Apriori...`);
-
-// Returns itemsets 'as soon as possible' through events.
-apriori.on('data', function (itemset) {
-    // Do something with the frequent itemset.
-    var support = itemset.support;
-    var items = itemset.items;
-    console.log(`Itemset { ${items.join(',')} } is frequent and have a support of ${support}`);
-});
-
-// Execute Apriori on a given set of transactions.
-apriori.exec(transactions)
-    .then(function (result) {
-      // Returns both the collection of frequent itemsets and execution time in millisecond.
-      var frequentItemsets = result.itemsets;
-      var executionTime = result.executionTime;
-      console.log(`Finished executing Apriori. ${frequentItemsets.length} frequent itemsets were found in ${executionTime}ms.`);
-  });
+apriori.on('data', itemset => console.log(`Itemset { ${itemset.items.join(',')} } is frequent and have a support of ${itemset.support}`));
+apriori.exec([
+    [1, 2, 4, 5], [1, 3, 4], [2, 3, 5], [2, 3], [2, 4],
+    [1, 3, 5], [1, 2, 3, 5], [2, 5], [1, 2, 3, 5]
+]).then(result => console.log(`Finished executing Apriori. ${result.frequentItemsets.length} frequent itemsets were found in ${result.executionTime}ms.`));
